@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crystal Journey | Tiên Lê</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Montserrat:wght@200&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        background: #000;
+      }
+      canvas {
+        display: block;
+      }
+
+      /* Tiêu đề Cinematic */
+      .header {
+        position: absolute;
+        top: 50px;
+        left: 50px;
+        z-index: 10;
+        color: white;
+        font-family: "Cinzel", serif;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+        padding-left: 20px;
+        animation: slideIn 2s ease-out;
+      }
+      .header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        letter-spacing: 10px;
+        background: linear-gradient(to right, #fff, #7ed6df);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .header p {
+        margin: 5px 0;
+        font-family: "Montserrat", sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 5px;
+        color: #7ed6df;
+        opacity: 0.7;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* Hiệu ứng mờ ảo góc nhìn */
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(
+          circle,
+          transparent 20%,
+          rgba(0, 0, 0, 0.8) 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="overlay"></div>
+    <div class="header">
+      <h1>TIÊN LÊ</h1>
+      <p>A CELESTIAL CHRISTMAS STORY</p>
+    </div>
+
+    <script>
+      let scene,
+        camera,
+        renderer,
+        trees = [],
+        stars;
+      const clock = new THREE.Clock();
+
+      init();
+      animate();
+
+      function init() {
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0x000000, 0.02);
+
+        camera = new THREE.PerspectiveCamera(
+          60,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // 1. Tạo bầu trời sao xa xăm
+        const starGeo = new THREE.BufferGeometry();
+        const starPos = [];
+        for (let i = 0; i < 3000; i++) {
+          starPos.push(
+            (Math.random() - 0.5) * 200,
+            (Math.random() - 0.5) * 200,
+            (Math.random() - 0.5) * 200
+          );
+        }
+        starGeo.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(starPos, 3)
+        );
+        stars = new THREE.Points(
+          starGeo,
+          new THREE.PointsMaterial({ color: 0xffffff, size: 0.1 })
+        );
+        scene.add(stars);
+
+        // 2. Tạo khu rừng với các dải xoắn ốc (như ảnh mẫu)
+        for (let i = 0; i < 40; i++) {
+          const x = (Math.random() - 0.5) * 80;
+          const z = (Math.random() - 0.5) * 150 - 50; // Trải dài ra xa
+          addCyberTree(x, z);
+        }
+      }
+
+      function addCyberTree(x, z) {
+        const group = new THREE.Group();
+
+        // Tạo dải xoắn ốc neon
+        const curvePoints = [];
+        for (let t = 0; t < 100; t++) {
+          const y = t * 0.12;
+          const radius = (1 - t / 100) * 3;
+          const angle = t * 0.4;
+          curvePoints.push(
+            new THREE.Vector3(
+              Math.cos(angle) * radius,
+              y,
+              Math.sin(angle) * radius
+            )
+          );
+        }
+
+        const curve = new THREE.CatmullRomCurve3(curvePoints);
+        const tubeGeo = new THREE.TubeGeometry(curve, 100, 0.03, 8, false);
+        const tubeMat = new THREE.MeshBasicMaterial({ color: 0x7ed6df });
+        const spiral = new THREE.Mesh(tubeGeo, tubeMat);
+
+        // Thêm các hạt ánh sáng lấp lánh quanh dải xoắn
+        const pGeo = new THREE.BufferGeometry();
+        const pPos = [];
+        for (let i = 0; i < 500; i++) {
+          const y = Math.random() * 12;
+          const r = (1 - y / 12) * 3.5;
+          const a = Math.random() * Math.PI * 2;
+          pPos.push(Math.cos(a) * r, y, Math.sin(a) * r);
+        }
+        pGeo.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(pPos, 3)
+        );
+        const pMat = new THREE.PointsMaterial({
+          size: 0.06,
+          color: 0xfff200,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+        });
+        const particles = new THREE.Points(pGeo, pMat);
+
+        group.add(spiral);
+        group.add(particles);
+        group.position.set(x, -10, z);
+        group.rotation.y = Math.random() * Math.PI;
+
+        scene.add(group);
+        trees.push({ obj: group, speed: 0.005 + Math.random() * 0.01 });
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        const t = clock.getElapsedTime();
+
+        // Camera lướt qua khu rừng vô tận
+        camera.position.z = 20 - ((t * 5) % 150);
+        camera.position.y = 2 + Math.sin(t * 0.5) * 2;
+        camera.lookAt(0, 0, camera.position.z - 50);
+
+        // Hiệu ứng các cây thông
+        trees.forEach((tree) => {
+          tree.obj.rotation.y += tree.speed;
+          // Hiệu ứng "nhịp đập" ánh sáng
+          tree.obj.children[0].material.color.setHSL(
+            0.5,
+            0.5,
+            0.5 + Math.sin(t * 2) * 0.2
+          );
+        });
+
+        // Sao lấp lánh
+        stars.rotation.y += 0.0005;
+
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    </script>
+  </body>
+</html>
