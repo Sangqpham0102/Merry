@@ -181,8 +181,7 @@
         requestAnimationFrame(loop);
       })();
 
-      const lerp = (a, b, t) =>
-        Math.abs(b - a) > 0.1 ? a + t * (b - a) : b;
+      const lerp = (a, b, t) => (Math.abs(b - a) > 0.1 ? a + t * (b - a) : b);
 
       function getTarget() {
         if (!targets.length) return null;
