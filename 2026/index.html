@@ -2,13 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Happy New Year 2026</title>
+    <title>Happy New Year 2025</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" href="favicon.ico" />
     <meta name="keywords" content="Happy New Year, New Year Celebration" />
     <meta
       name="description"
-      content="Happy New Year 2026 Fireworks Animation"
+      content="Happy New Year 2025 Fireworks Animation"
     />
   </head>
 
@@ -51,7 +51,7 @@
         }
 
         draw() {
-          ctx2.fillStyle = hsl(${this.hue}, 80%, ${this.lightness}%);
+          ctx2.fillStyle = `hsl(${this.hue}, 80%, ${this.lightness}%)`;
           ctx2.beginPath();
           ctx2.arc(this.x, this.y, this.size, 0, Math.PI * 2);
           ctx2.fill();
@@ -101,7 +101,7 @@
           ctx2.save();
           ctx2.translate(this.x, this.y);
           ctx2.rotate(Math.atan2(this.ySpeed, this.xSpeed) + Math.PI / 2);
-          ctx2.fillStyle = hsl(${this.hue}, 80%, 70%);
+          ctx2.fillStyle = `hsl(${this.hue}, 80%, 70%)`;
           ctx2.fillRect(0, 0, 4, 14);
           ctx2.restore();
         }
@@ -136,13 +136,13 @@
       let textWidth = 999999;
 
       while (textWidth > window.innerWidth) {
-        ctx1.font = 900 ${fontSize--}px Arial;
+        ctx1.font = `900 ${fontSize--}px Arial`;
         textWidth = ctx1.measureText(text).width;
       }
 
       c1.width = textWidth;
       c1.height = fontSize * 1.5;
-      ctx1.font = 900 ${fontSize}px Arial;
+      ctx1.font = `900 ${fontSize}px Arial`;
       ctx1.fillStyle = "#ffffff";
       ctx1.fillText(text, 0, fontSize);
 
@@ -181,7 +181,8 @@
         requestAnimationFrame(loop);
       })();
 
-      const lerp = (a, b, t) => (Math.abs(b - a) > 0.1 ? a + t * (b - a) : b);
+      const lerp = (a, b, t) =>
+        Math.abs(b - a) > 0.1 ? a + t * (b - a) : b;
 
       function getTarget() {
         if (!targets.length) return null;
