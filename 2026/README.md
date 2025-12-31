@@ -1,2 +1,4 @@
 # New2026
+--> PROMPT
+
 Create a fullscreen HTML5 Canvas animation that celebrates Happy New Year 2025. The scene features a dark gradient night sky background. Firework rockets launch from the bottom of the screen, fly upward with gravity, and explode into glowing pastel-colored particles. Each particle dynamically moves toward invisible target points that form the text “HAPPY NEW YEAR 2026” in the center 6of the screen. The text is constructed from thousands of animated particles extracted from canvas pixel data. The animation runs smoothly using requestAnimationFrame, with fading trails, soft glow effects, and no external libraries. The final effect is a cinematic New Year fireworks show where explosions gradually assemble into a bright, readable celebratory message.
